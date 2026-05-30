@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Callable
 
+from core.secrets import mask_secret
 from platforms.kiro.core import KiroRegister, _pwd, wait_for_otp
 
 
@@ -22,7 +23,11 @@ class KiroProtocolMailboxWorker:
         otp_callback=None,
     ) -> dict:
         use_password = password or _pwd()
-        self.client.log(f"  自动生成密码: {use_password}" if not password else f"  使用传入密码: {use_password}")
+        self.client.log(
+            f"  auto-generated password: {mask_secret(use_password)}"
+            if not password
+            else f"  using provided password: {mask_secret(use_password)}"
+        )
         self.client.log(f"========== 开始注册: {email} ==========")
 
         redir = self.client.step1_kiro_init()

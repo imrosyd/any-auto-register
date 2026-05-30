@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 
 from curl_cffi import requests as cffi_requests
 
+from core.secrets import mask_secret
 from .oauth import OAuthManager, OAuthStart, generate_oauth_url, submit_callback_url
 from .http_client import OpenAIHTTPClient, HTTPClientError
 # from ..services import EmailServiceFactory, BaseEmailService, EmailServiceType  # removed: external dep
@@ -575,7 +576,7 @@ class RegistrationEngine:
                             f"turnstile={'yes' if self._password_sentinel.t else 'no'}"
                         )
 
-                self._log(f"生成密码[{index}/{len(candidates)}]: {password}")
+                self._log(f"generated password [{index}/{len(candidates)}]: {mask_secret(password)}")
 
                 register_body = json.dumps({
                     "password": password,

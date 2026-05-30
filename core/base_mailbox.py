@@ -8,6 +8,7 @@ from urllib.parse import urlencode, urlparse
 
 logger = logging.getLogger(__name__)
 
+from core.secrets import mask_secret
 from core.tls import insecure_request, mark_session_insecure, suppress_insecure_request_warning
 
 # ── 邮箱服务默认 API 地址（统一维护，需要时在此修改） ──
@@ -1104,7 +1105,7 @@ class CFWorkerMailbox(BaseMailbox):
         email = data.get("email", data.get("address", ""))
         token = data.get("token", data.get("jwt", ""))
         self._token = token
-        print(f"[CFWorker] 生成邮箱: {email} token={token[:40] if token else 'NONE'}...")
+        print(f"[CFWorker] generated mailbox: {email} token={mask_secret(token) or 'NONE'}")
         return MailboxAccount(
             email=email,
             account_id=token,

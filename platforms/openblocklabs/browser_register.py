@@ -3,6 +3,8 @@ import random, string, time
 from typing import Callable, Optional
 from urllib.parse import parse_qs, quote, urlparse
 
+from core.secrets import mask_secret
+
 from camoufox.sync_api import Camoufox
 
 AUTH_BASE = "https://auth.openblocklabs.com"
@@ -485,8 +487,8 @@ class OpenBlockLabsBrowserRegister:
     def run(self, email: str, password: str) -> dict:
         if not password:
             password = _generate_password()
-            self.log("未提供密码，已自动生成随机密码")
-        self.log(f"注册凭据: {email} / {password}")
+            self.log("no password provided, generated a random one")
+        self.log(f"registration credentials: {email} / {mask_secret(password)}")
 
         proxy = _build_proxy_config(self.proxy)
         launch_opts = {"headless": self.headless}

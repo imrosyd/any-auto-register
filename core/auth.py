@@ -11,6 +11,7 @@ work without credentials.
 """
 from __future__ import annotations
 
+import hmac
 import os
 
 from fastapi import Request, Response
@@ -36,13 +37,14 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if not path.startswith("/api"):
             return await call_next(request)
 
-        # Check Authorization header
+        # Check Authorization header (constant-time compare to avoid timing leaks)
         auth_header = request.headers.get("authorization", "")
-        if auth_header.startswith("Bearer ") and auth_header[7:] == password:
+        if auth_header.startswith("Bearer ") and hmac.compare_digest(auth_header[7:], password):
             return await call_next(request)
 
         # Check cookie
-        if request.cookies.get("_auth") == password:
+        cookie = request.cookies.get("_auth", "")
+        if cookie and hmac.compare_digest(cookie, password):
             return await call_next(request)
 
         return Response(content='{"detail":"Unauthorized"}', status_code=401, media_type="application/json")

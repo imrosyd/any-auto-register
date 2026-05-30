@@ -94,9 +94,18 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Account Manager", version="2.0.0", lifespan=lifespan)
 
 app.add_middleware(AuthMiddleware)
+
+# Cross-origin access is only needed for separate-origin frontends. The desktop
+# bundle, the single-port Docker image and the Vite dev proxy all talk to the API
+# same-origin, so default to localhost dev origins instead of a wildcard. Override
+# with CORS_ALLOW_ORIGINS (comma-separated) when serving the UI from another host.
+_cors_origins = [o.strip() for o in os.environ.get("CORS_ALLOW_ORIGINS", "").split(",") if o.strip()]
+if not _cors_origins:
+    _cors_origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )

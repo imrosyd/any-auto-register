@@ -26,10 +26,18 @@ def load_all():
     """自动扫描并加载 platforms/ 下所有插件"""
     import platforms
     for finder, name, _ in pkgutil.iter_modules(platforms.__path__, platforms.__name__ + "."):
+        module_name = f"{name}.plugin"
         try:
-            importlib.import_module(f"{name}.plugin")
-        except ModuleNotFoundError:
-            pass
+            importlib.import_module(module_name)
+        except ModuleNotFoundError as exc:
+            # A package without a plugin.py is fine; anything else (e.g. the
+            # plugin importing a missing dependency) is a real error we must not
+            # swallow silently or the plugin disappears with no trace.
+            if exc.name == module_name:
+                continue
+            print(f"[registry] failed to load plugin '{name}': {exc}")
+        except Exception as exc:
+            print(f"[registry] error loading plugin '{name}': {exc}")
 
 
 def get(name: str) -> Type[BasePlatform]:
