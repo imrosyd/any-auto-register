@@ -187,8 +187,8 @@ export function TaskLogPanel({
             <div
               key={index}
               className={`rounded-xl border border-white/5 bg-white/[0.025] px-3 py-2 leading-5 ${
-                line.includes('✓') || /success|成功/i.test(line) ? 'text-emerald-400' :
-                line.includes('✗') || /fail|error|失败|错误/i.test(line) ? 'text-red-400' :
+                line.includes('✓') || /success/i.test(line) ? 'text-emerald-400' :
+                line.includes('✗') || /fail|error/i.test(line) ? 'text-red-400' :
                 'text-[var(--text-secondary)]'
               }`}
             >

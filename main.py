@@ -2,10 +2,10 @@ import os
 import sys
 from contextlib import asynccontextmanager
 
-# 把 stdout/stderr 强制成 utf-8（Windows 中文版默认是 gbk，碰到 ✗ ✓ 等
-# 非 GBK 字符会抛 UnicodeEncodeError 让进程崩溃）。errors="replace" 双保险，
-# 任何编码失败的字符替换成 ? 而不是抛错。
-# 同时设置 PYTHONUTF8 环境变量，确保子进程也使用 UTF-8。
+# Force stdout/stderr to utf-8 (Windows Chinese version defaults to gbk, encountering non-GBK
+# characters like ✗ ✓ would throw UnicodeEncodeError and crash the process). errors="replace"
+# provides double protection, any encoding-failed characters are replaced with ? instead of throwing.
+# Also set PYTHONUTF8 environment variable to ensure subprocesses also use UTF-8.
 os.environ.setdefault("PYTHONUTF8", "1")
 for _stream in (sys.stdout, sys.stderr):
     if _stream is not None and hasattr(_stream, "reconfigure"):
@@ -13,7 +13,7 @@ for _stream in (sys.stdout, sys.stderr):
             _stream.reconfigure(encoding="utf-8", errors="replace")
         except Exception:
             pass
-# 兜底：如果 reconfigure 不可用（PyInstaller 某些版本），用 wrapper 包一层
+# Fallback: if reconfigure is unavailable (some PyInstaller versions), wrap with a wrapper
 if sys.stdout is not None and getattr(sys.stdout, "encoding", "").lower() not in ("utf-8", "utf8"):
     try:
         import io
@@ -32,8 +32,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-# PyInstaller 静态分析钩子 — 让 modulefinder 跟踪到 Solver 子进程依赖（quart 等）
-# 不会在运行时执行，只是给 PyInstaller 看
+# PyInstaller static analysis hook — lets modulefinder track Solver subprocess dependencies (quart etc.)
+# Not executed at runtime, only for PyInstaller
 if False:  # pragma: no cover
     import services.turnstile_solver.api_solver  # noqa: F401
     import quart  # noqa: F401
@@ -69,9 +69,9 @@ async def lifespan(app: FastAPI):
     init_db()
     load_all()
     load_providers()
-    print("[OK] 数据库初始化完成")
+    print("[OK] Database initialization complete")
     from core.registry import list_platforms
-    print(f"[OK] 已加载平台: {[p['name'] for p in list_platforms()]}")
+    print(f"[OK] Loaded platforms: {[p['name'] for p in list_platforms()]}")
     from core.scheduler import scheduler
     scheduler.start()
     from services.task_runtime import task_runtime
@@ -143,10 +143,10 @@ if __name__ == "__main__":
     import sys
     import uvicorn
 
-    # 当 backend 被自己以 --solver 参数 spawn 时（PyInstaller 打包模式），
-    # 不启动 FastAPI 主服务，而是作为 Turnstile Solver 子进程运行
+    # When backend is spawned by itself with --solver argument (PyInstaller packaged mode),
+    # don't start FastAPI main service, instead run as Turnstile Solver subprocess
     if len(sys.argv) > 1 and sys.argv[1] == "--solver":
-        sys.argv = [sys.argv[0]] + sys.argv[2:]  # 把 --solver 摘掉，让 argparse 看到剩余参数
+        sys.argv = [sys.argv[0]] + sys.argv[2:]  # Remove --solver so argparse sees remaining arguments
         from services.turnstile_solver.start import main as solver_main
         solver_main()
         sys.exit(0)

@@ -1,4 +1,4 @@
-"""OpenBlockLabs 浏览器注册流程（Camoufox）。"""
+"""OpenBlockLabs browser registration flow (Camoufox)."""
 import random, string, time
 from typing import Callable, Optional
 from urllib.parse import parse_qs, quote, urlparse
@@ -116,7 +116,7 @@ def _click_turnstile_in_iframe(page, log_fn=print) -> bool:
         time.sleep(0.5)
 
     if not cf_frame:
-        log_fn("未找到 Cloudflare iframe frame，跳过直接点击")
+        log_fn("Cloudflare iframe frame not found, skipping direct click")
         return False
 
     iframe_el = None
@@ -152,7 +152,7 @@ def _click_turnstile_in_iframe(page, log_fn=print) -> bool:
                 page.mouse.down()
                 time.sleep(random.uniform(0.08, 0.15))
                 page.mouse.up()
-                log_fn(f"✅ 点击 Turnstile checkbox 坐标: ({cx:.0f}, {cy:.0f})")
+                log_fn(f"✅ Clicked Turnstile checkbox at coordinates: ({cx:.0f}, {cy:.0f})")
                 time.sleep(1.5)
                 if _is_turnstile_modal_visible(page):
                     page.mouse.move(cx + 12, cy)
@@ -163,14 +163,14 @@ def _click_turnstile_in_iframe(page, log_fn=print) -> bool:
                     time.sleep(1)
                 return True
         except Exception as exc:
-            log_fn(f"Turnstile 坐标点击失败: {exc}")
+            log_fn(f"Turnstile coordinate click failed: {exc}")
 
     try:
         cf_frame.locator("body").click(position={"x": 24, "y": 32}, timeout=5000)
-        log_fn("✅ frame 内坐标点击成功")
+        log_fn("✅ Frame coordinate click successful")
         return True
     except Exception as exc:
-        log_fn(f"frame 内点击失败: {exc}")
+        log_fn(f"Frame click failed: {exc}")
 
     return False
 
@@ -183,7 +183,7 @@ def _wait_cf_full_block_clear(page, timeout: int = 120, log_fn=print) -> None:
         if not _is_cf_full_block(page):
             return
         if not warned:
-            log_fn("检测到 Cloudflare 全页拦截，尝试点击验证 checkbox...")
+            log_fn("Detected Cloudflare full page block, trying to click verify checkbox...")
             warned = True
         try:
             viewport = page.viewport_size or {"width": 1280, "height": 720}
@@ -201,7 +201,7 @@ def _wait_cf_full_block_clear(page, timeout: int = 120, log_fn=print) -> None:
                 time.sleep(1)
         else:
             time.sleep(2)
-    raise RuntimeError(f"Cloudflare 全页验证未通过: {page.url}")
+    raise RuntimeError(f"Cloudflare full page verification failed: {page.url}")
 
 
 def _click_continue(page) -> bool:
@@ -238,10 +238,10 @@ def _handle_turnstile(page, log_fn=print, wait_secs: int = 12) -> bool:
     if not has_turnstile:
         return False
 
-    log_fn("检测到 Turnstile，尝试直接点击 iframe checkbox...")
+    log_fn("Detected Turnstile, trying direct iframe checkbox click...")
     solved = _click_turnstile_in_iframe(page, log_fn)
     if not solved:
-        log_fn("⚠️ 自动点击失败，等待手动通过（最多90秒）...")
+        log_fn("⚠️ Auto-click failed, waiting for manual pass (up to 90 seconds)...")
         manual_deadline = time.time() + 90
         while time.time() < manual_deadline:
             if not _is_turnstile_modal_visible(page):
@@ -252,7 +252,7 @@ def _handle_turnstile(page, log_fn=print, wait_secs: int = 12) -> bool:
     else:
         time.sleep(3)
         if _is_turnstile_modal_visible(page):
-            log_fn("Turnstile 仍在显示，等待自动通过...")
+            log_fn("Turnstile still showing, waiting for auto-pass...")
             time.sleep(5)
         if not page.query_selector(otp_ready_sel):
             _click_continue(page)
@@ -284,7 +284,7 @@ def _wait_for_visible_element(page, selectors: list[str], timeout: int = 15, *, 
         if el:
             return el, used_sel
         time.sleep(0.2)
-    raise RuntimeError(f"未找到可见元素: {' | '.join(selectors)}")
+    raise RuntimeError(f"Visible element not found: {' | '.join(selectors)}")
 
 
 def _read_input_value(input_el) -> str:
@@ -344,7 +344,7 @@ def _fill_visible_input(page, selectors: list[str], value: str, label: str, time
         time.sleep(0.4)
 
     current = _read_input_value(input_el)
-    raise RuntimeError(f"{label}输入失败: current={current!r}, expected_len={len(value)}, err={last_error}")
+    raise RuntimeError(f"{label} input failed: current={current!r}, expected_len={len(value)}, err={last_error}")
 
 
 def _click_visible_button(page, selectors: list[str], timeout: int = 15) -> str:
@@ -368,7 +368,7 @@ def _click_visible_button(page, selectors: list[str], timeout: int = 15) -> str:
             last_error = exc
         time.sleep(0.2)
 
-    raise RuntimeError(f"点击按钮失败: {last_error}")
+    raise RuntimeError(f"Button click failed: {last_error}")
 
 
 def _is_email_verification_ready(page) -> bool:
@@ -410,7 +410,7 @@ def _advance_to_email_verification(page, btn_selectors: list[str], log_fn=print,
         try:
             body_text = (page.locator("body").inner_text() or "").strip().lower()
             if "the requested resource was not found" in body_text or body_text == "not found":
-                raise RuntimeError(f"中间页返回 Not Found: {page.url}")
+                raise RuntimeError(f"Intermediate page returned Not Found: {page.url}")
         except RuntimeError:
             raise
         except Exception:
@@ -426,7 +426,7 @@ def _advance_to_email_verification(page, btn_selectors: list[str], log_fn=print,
                     pass
                 try:
                     btn_el.click(timeout=3000)
-                    log_fn(f"检测到中间页，继续点击按钮: {used_sel}")
+                    log_fn(f"Detected intermediate page, continuing button click: {used_sel}")
                     last_click_at = now
                     time.sleep(2)
                     continue
@@ -435,7 +435,7 @@ def _advance_to_email_verification(page, btn_selectors: list[str], log_fn=print,
 
         time.sleep(0.5)
 
-    raise RuntimeError(f"未进入验证码页面: {page.url}")
+    raise RuntimeError(f"Did not enter verification code page: {page.url}")
 
 
 def _extract_authorization_session_id(url: str) -> str:
@@ -461,13 +461,13 @@ def _wait_for_signup_session(page, timeout: int = 30) -> str:
         try:
             body_text = (page.locator("body").inner_text() or "").strip().lower()
             if "the requested resource was not found" in body_text or body_text == "not found":
-                raise RuntimeError(f"WorkOS 会话初始化失败，页面返回 Not Found: {page.url}")
+                raise RuntimeError(f"WorkOS session initialization failed, page returned Not Found: {page.url}")
         except RuntimeError:
             raise
         except Exception:
             pass
         time.sleep(0.5)
-    raise RuntimeError(f"等待 authorization_session_id 超时: {page.url}")
+    raise RuntimeError(f"Waiting for authorization_session_id timed out: {page.url}")
 
 
 class OpenBlockLabsBrowserRegister:
@@ -522,7 +522,7 @@ class OpenBlockLabsBrowserRegister:
     });
 })();
 """)
-            self.log("打开 OpenBlockLabs 注册页")
+            self.log("Opening OpenBlockLabs registration page")
             last_open_error = None
             redirect_uri = quote(f"{DASHBOARD}/auth/callback", safe="")
             entry_url = f"{AUTH_BASE}/?client_id={CLIENT_ID}&redirect_uri={redirect_uri}"
@@ -549,12 +549,12 @@ class OpenBlockLabsBrowserRegister:
                     break
                 except Exception as exc:
                     last_open_error = exc
-                    self.log(f"注册会话未就绪，重试打开页面 ({attempt + 1}/2): {exc}")
+                    self.log(f"Registration session not ready, retrying page open ({attempt + 1}/2): {exc}")
                     if attempt == 1:
                         raise
                     time.sleep(2)
             if not session_id:
-                raise RuntimeError(str(last_open_error or "未获取到 authorization_session_id"))
+                raise RuntimeError(str(last_open_error or "Did not obtain authorization_session_id"))
 
             for sel, val in [
                 ('input[name="first_name"], input[placeholder*="First"]', first_name),
@@ -581,29 +581,29 @@ class OpenBlockLabsBrowserRegister:
                 'button:has-text("Sign up")',
             ]
 
-            used_email_sel = _fill_visible_input(page, email_selectors, email, "邮箱", timeout=60)
-            self.log(f"已填写邮箱: {used_email_sel}")
+            used_email_sel = _fill_visible_input(page, email_selectors, email, "email", timeout=60)
+            self.log(f"Filled email: {used_email_sel}")
 
             pwd_el, _ = _find_visible_element(page, pwd_selectors)
             if pwd_el:
-                used_pwd_sel = _fill_visible_input(page, pwd_selectors, password, "密码", timeout=20)
-                self.log(f"已填写密码: {used_pwd_sel}")
+                used_pwd_sel = _fill_visible_input(page, pwd_selectors, password, "password", timeout=20)
+                self.log(f"Filled password: {used_pwd_sel}")
                 used_btn_sel = _click_visible_button(page, btn_selectors)
-                self.log(f"已点击提交按钮: {used_btn_sel}")
+                self.log(f"Clicked submit button: {used_btn_sel}")
                 _advance_to_email_verification(page, btn_selectors, log_fn=self.log, timeout=40)
             else:
                 used_btn_sel = _click_visible_button(page, btn_selectors)
-                self.log(f"已点击继续按钮: {used_btn_sel}")
+                self.log(f"Clicked continue button: {used_btn_sel}")
                 _wait_cf_full_block_clear(page, timeout=30, log_fn=self.log)
                 _handle_turnstile(page, self.log, wait_secs=15)
                 try:
                     page.wait_for_url("**/sign-up/password**", timeout=20000)
                 except Exception:
                     pass
-                used_pwd_sel = _fill_visible_input(page, pwd_selectors, password, "密码", timeout=20)
-                self.log(f"已填写密码: {used_pwd_sel}")
+                used_pwd_sel = _fill_visible_input(page, pwd_selectors, password, "password", timeout=20)
+                self.log(f"Filled password: {used_pwd_sel}")
                 used_btn_sel = _click_visible_button(page, btn_selectors)
-                self.log(f"已点击密码页提交按钮: {used_btn_sel}")
+                self.log(f"Clicked password page submit button: {used_btn_sel}")
                 _advance_to_email_verification(page, btn_selectors, log_fn=self.log, timeout=40)
 
             time.sleep(2)
@@ -612,14 +612,14 @@ class OpenBlockLabsBrowserRegister:
                 page.screenshot(path="/tmp/openblocks_password_fail.png")
                 with open("/tmp/openblocks_password_fail.html", "w") as f:
                     f.write(page.content())
-                raise RuntimeError(f"未进入验证码页面: {page.url}")
+                raise RuntimeError(f"Did not enter verification code page: {page.url}")
 
             if not self.otp_callback:
-                raise RuntimeError("OpenBlockLabs 注册需要邮箱验证码但未提供 otp_callback")
-            self.log("等待 OpenBlockLabs 验证码")
+                raise RuntimeError("OpenBlockLabs registration requires email verification code but otp_callback not provided")
+            self.log("Waiting for OpenBlockLabs verification code")
             code = self.otp_callback()
             if not code:
-                raise RuntimeError("未获取到验证码")
+                raise RuntimeError("Failed to get verification code")
             code = code.replace("-", "")
 
             page.screenshot(path="/tmp/openblocks_otp.png")
@@ -634,24 +634,24 @@ class OpenBlockLabsBrowserRegister:
                         break
                 page.keyboard.type(code)
             except Exception as exc:
-                self.log(f"填写验证码失败: {exc}")
+                self.log(f"Filling verification code failed: {exc}")
 
             _click_continue(page)
             time.sleep(5)
 
             if not _wait_for_url(page, "dashboard.openblocklabs.com", timeout=60):
-                self.log("未跳转到 dashboard，保存截图到 /tmp/openblocks_fail.png")
+                self.log("Did not redirect to dashboard, saving screenshot to /tmp/openblocks_fail.png")
                 page.screenshot(path="/tmp/openblocks_fail.png")
                 with open("/tmp/openblocks_fail.html", "w") as f:
                     f.write(page.content())
-                raise RuntimeError(f"OpenBlockLabs 注册后未跳转到 dashboard: {page.url}")
+                raise RuntimeError(f"OpenBlockLabs did not redirect to dashboard after registration: {page.url}")
 
             wos = _get_wos_session(page, timeout=15)
             if not wos:
-                self.log("未获取到 wos_session，保存截图到 /tmp/openblocks_fail.png")
+                self.log("Did not obtain wos_session, saving screenshot to /tmp/openblocks_fail.png")
                 page.screenshot(path="/tmp/openblocks_fail.png")
                 with open("/tmp/openblocks_fail.html", "w") as f:
                     f.write(page.content())
-                raise RuntimeError("未获取到 wos-session cookie")
-            self.log(f"注册成功: {email}")
+                raise RuntimeError("Did not obtain wos-session cookie")
+            self.log(f"Registration successful: {email}")
             return {"email": email, "password": password, "wos_session": wos}

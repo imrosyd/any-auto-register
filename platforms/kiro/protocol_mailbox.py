@@ -1,4 +1,4 @@
-"""Kiro 协议邮箱注册 worker。"""
+"""Kiro protocol mailbox registration worker."""
 from __future__ import annotations
 
 from typing import Callable
@@ -28,64 +28,64 @@ class KiroProtocolMailboxWorker:
             if not password
             else f"  using provided password: {mask_secret(use_password)}"
         )
-        self.client.log(f"========== 开始注册: {email} ==========")
+        self.client.log(f"========== Starting registration: {email} ==========")
 
         redir = self.client.step1_kiro_init()
         if not redir:
             raise RuntimeError("InitiateLogin failed")
         if not self.client.step2_get_wsh(redir):
-            raise RuntimeError("获取wsh失败")
+            raise RuntimeError("Failed to get wsh")
         if not self.client.step3_signin_flow(email):
-            raise RuntimeError("signin flow失败")
+            raise RuntimeError("Signin flow failed")
         if not self.client.step4_signup_flow(email):
-            raise RuntimeError("signup flow失败")
+            raise RuntimeError("Signup flow failed")
         if not self.client.profile_wf_id:
-            raise RuntimeError("未获取到workflowID")
+            raise RuntimeError("Failed to get workflowID")
         tes = self.client.step5_get_tes_token()
         if not tes:
-            self.client.log("  ⚠️ TES token获取失败, 继续...")
+            self.client.log("  TES token retrieval failed, continuing...")
         if not self.client.step6_profile_load():
-            raise RuntimeError("profile start失败")
+            raise RuntimeError("Profile start failed")
         if self.client.step7_send_otp(email) is None:
-            raise RuntimeError("send OTP失败")
+            raise RuntimeError("Send OTP failed")
 
         if otp_callback:
-            self.client.log("  自动获取验证码...")
+            self.client.log("  Auto-fetching verification code...")
             otp = otp_callback()
         elif mail_token:
-            self.client.log("  自动获取验证码...")
+            self.client.log("  Auto-fetching verification code...")
             otp = wait_for_otp(mail_token, timeout=otp_timeout, tag=self.client.tag)
         else:
-            otp = input(f"[{self.client.tag}] 请输入验证码: ").strip()
+            otp = input(f"[{self.client.tag}] Enter verification code: ").strip()
         if not otp:
-            raise RuntimeError("未获取到验证码")
+            raise RuntimeError("Failed to get verification code")
 
         identity = self.client.step8_create_identity(otp, email, name)
         if not identity:
-            raise RuntimeError("create-identity失败")
+            raise RuntimeError("Create-identity failed")
         reg_code = identity["registrationCode"]
         sign_in_state = identity["signInState"]
 
         signup_registration = self.client.step9_signup_registration(reg_code, sign_in_state)
         if not signup_registration:
-            raise RuntimeError("signup registration失败")
+            raise RuntimeError("Signup registration failed")
         password_state = self.client.step10_set_password(use_password, email, signup_registration)
         if not password_state:
-            raise RuntimeError("设置密码失败")
+            raise RuntimeError("Failed to set password")
 
         login_result = self.client.step11_final_login(email, password_state)
         if not login_result:
-            self.client.log("  ⚠️ 最终登录步骤失败, 但账号可能已创建成功")
+            self.client.log("  Final login step failed, but account may have been created successfully")
 
         tokens = self.client.step12_get_tokens()
         if not tokens:
-            self.client.log("🎉 注册完成! (但 token 获取失败, 账号可用)")
+            self.client.log("Registration complete! (but token retrieval failed, account usable)")
             return {"email": email, "password": use_password, "name": name}
 
         bearer_token = tokens["sessionToken"]
         device_tokens = self.client.step12f_device_auth(bearer_token)
         if device_tokens:
-            self.client.log("🎉 注册完成! (含 accessToken + sessionToken + refreshToken)")
+            self.client.log("Registration complete! (includes accessToken + sessionToken + refreshToken)")
             return {
                 "email": email,
                 "password": use_password,
@@ -97,7 +97,7 @@ class KiroProtocolMailboxWorker:
                 "refreshToken": device_tokens["refreshToken"],
             }
 
-        self.client.log("🎉 注册完成! (含 accessToken + sessionToken, 但 refreshToken 获取失败)")
+        self.client.log("Registration complete! (includes accessToken + sessionToken, but refreshToken retrieval failed)")
         return {
             "email": email,
             "password": use_password,

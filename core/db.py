@@ -1,4 +1,4 @@
-"""数据库模型 - SQLite via SQLModel"""
+"""Database models - SQLite via SQLModel"""
 import json
 import os
 from datetime import datetime, timezone
@@ -301,7 +301,7 @@ class ProxyModel(SQLModel, table=True):
 
 
 def save_account(account) -> 'AccountModel':
-    """从 base_platform.Account 存入数据库（同平台同邮箱则更新）"""
+    """Save a base_platform.Account to DB (same platform+email updates existing)"""
     from core.account_graph import sync_platform_account_graph
 
     with Session(engine) as session:
@@ -446,7 +446,7 @@ def init_db():
 
 
 def _ensure_column(table: str, column: str, col_type: str):
-    """给已有表安全地加一列（SQLite 不支持 IF NOT EXISTS ADD COLUMN）。"""
+    """Safely add a column to an existing table (SQLite does not support IF NOT EXISTS ADD COLUMN)."""
     inspector = inspect(engine)
     tables = set(inspector.get_table_names())
     if table not in tables:
@@ -456,15 +456,15 @@ def _ensure_column(table: str, column: str, col_type: str):
         return
     with engine.begin() as conn:
         conn.exec_driver_sql(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")
-    print(f"[DB] 已添加列 {table}.{column}")
+    print(f"[DB] Added column {table}.{column}")
 
 
 def _cleanup_empty_provider_settings():
-    """清理 v1.0.7/v1.0.8 中 PR #42 自动创建的空 ProviderSetting。
+    """Clean up empty ProviderSetting entries auto-created by PR #42 in v1.0.7/v1.0.8.
 
-    判定条件：config / auth / metadata 三个字段都为空 dict 时认为
-    用户从未编辑过，可以安全删除。被删后用户能从前端"新增"按钮
-    重新选择对应的 provider。"""
+    An entry is considered never-edited and safe to remove when config, auth,
+    and metadata are all empty dicts. After removal, users can re-select the
+    provider via the frontend "Add" button. """
     with Session(engine) as session:
         items = session.exec(select(ProviderSettingModel)).all()
         removed = 0
@@ -479,7 +479,7 @@ def _cleanup_empty_provider_settings():
             session.commit()
 
 
-# 旧版 provider_key → 新版 provider_key 映射
+# Legacy provider_key → new provider_key mapping
 _LEGACY_PROVIDER_KEY_MAP: dict[tuple[str, str], str] = {
     # mailbox
     ("mailbox", "moemail"): "moemail_api",
@@ -499,7 +499,7 @@ _LEGACY_PROVIDER_KEY_MAP: dict[tuple[str, str], str] = {
     ("captcha", "twocaptcha"): "twocaptcha_api",
 }
 
-# 旧版 auth_mode 值 → 新版 auth_mode 值映射
+# Legacy auth_mode value → new auth_mode value mapping
 _LEGACY_AUTH_MODE_MAP: dict[str, str] = {
     "endpoint_only": "password",
     "manual_login": "password",
@@ -511,16 +511,16 @@ _LEGACY_AUTH_MODE_MAP: dict[str, str] = {
 
 
 def _migrate_legacy_provider_keys():
-    """将旧版 provider_key 和 auth_mode 迁移到新版命名。
+    """Migrate legacy provider_key and auth_mode values to the new naming scheme.
 
-    同时迁移 provider_settings 和 provider_definitions 两张表。
-    如果新 key 已存在则删除旧记录（避免唯一约束冲突）。
-    迁移后还会修正 auth_mode 值，使其匹配新版 definition 的有效值。
+    Migrates both provider_settings and provider_definitions tables.
+    If the new key already exists, the old record is deleted (avoiding unique constraint conflicts).
+    Afterwards, auth_mode values are corrected to match the new definition's valid values.
     """
     with Session(engine) as session:
         migrated = 0
 
-        # 1. 迁移 provider_key
+        # 1. Migrate provider_key
         for (ptype, old_key), new_key in _LEGACY_PROVIDER_KEY_MAP.items():
             # --- provider_settings ---
             old_setting = session.exec(
@@ -562,16 +562,16 @@ def _migrate_legacy_provider_keys():
 
         if migrated:
             session.commit()
-            print(f"[DB] 已迁移 {migrated} 条旧版 provider key")
+            print(f"[DB] Migrated {migrated} legacy provider keys")
 
-        # 2. 修正 auth_mode 值
+        # 2. Correct auth_mode values
         fixed = 0
         all_settings = session.exec(select(ProviderSettingModel)).all()
         for item in all_settings:
             old_mode = item.auth_mode or ""
             if not old_mode:
                 continue
-            # 查找对应的 definition
+            # Find corresponding definition
             defn = session.exec(
                 select(ProviderDefinitionModel)
                 .where(ProviderDefinitionModel.provider_type == item.provider_type)
@@ -581,9 +581,9 @@ def _migrate_legacy_provider_keys():
                 continue
             valid_modes = {m.get("value") for m in defn.get_auth_modes()}
             if not valid_modes or old_mode in valid_modes:
-                # 当前值已经有效，跳过
+                # Current value is already valid, skip
                 continue
-            # 尝试映射
+            # Try to map
             new_mode = _LEGACY_AUTH_MODE_MAP.get(old_mode)
             if new_mode and new_mode in valid_modes:
                 item.auth_mode = new_mode
@@ -596,11 +596,11 @@ def _migrate_legacy_provider_keys():
 
         if fixed:
             session.commit()
-            print(f"[DB] 已修正 {fixed} 条旧版 auth_mode")
+            print(f"[DB] Corrected {fixed} legacy auth_mode values")
 
 
 def _cleanup_non_real_providers():
-    """generic_http 不是真实邮箱，从 DB 中清除其 definition 和空 setting。"""
+    """generic_http is not a real mailbox; remove its definition and empty setting from DB."""
     remove_keys = [("mailbox", "generic_http")]
     with Session(engine) as session:
         for pt, pk in remove_keys:

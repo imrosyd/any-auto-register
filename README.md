@@ -2,7 +2,7 @@
 
 # Any Auto Register
 
-11+ AI 平台账号自动化注册与管理 · 协议 / 浏览器双模式 · Mac / Windows 桌面版一键启动
+Account automation for 11+ AI platforms · Protocol / browser dual-mode · One-click Mac / Windows desktop
 
 <p>
   <a href="https://github.com/lxf746/any-auto-register/stargazers"><img src="https://img.shields.io/github/stars/lxf746/any-auto-register?style=flat-square&logo=github&color=FFB003" alt="Stars" /></a>
@@ -13,114 +13,114 @@
 </p>
 
 <p>
-  <a href="https://github.com/lxf746/any-auto-register/releases/latest"><b>下载桌面版</b></a>
+  <a href="https://github.com/lxf746/any-auto-register/releases/latest"><b>Download desktop</b></a>
   &nbsp;·&nbsp;
-  <a href="#它解决什么">它解决什么</a>
+  <a href="#what-it-solves">What it solves</a>
   &nbsp;·&nbsp;
-  <a href="#一眼看完">界面预览</a>
+  <a href="#at-a-glance">Screenshots</a>
   &nbsp;·&nbsp;
-  <a href="#社群">加入社群</a>
+  <a href="#community">Community</a>
   &nbsp;·&nbsp;
-  <a href="README_en.md">English</a>
+  <a href="README_zh.md">中文</a>
   &nbsp;·&nbsp;
   <a href="README_vi.md">Tiếng Việt</a>
 </p>
 
-<img src="assets/screenshots/概览.png" alt="Any Auto Register Dashboard" width="92%" />
+<img src="assets/screenshots/overview.png" alt="Any Auto Register Dashboard" width="92%" />
 
 </div>
 
 ---
 
-> **本仓库是 [`lxf746/any-auto-register`](https://github.com/lxf746/any-auto-register) 官方上游**,最早的原作者仓库与最及时的更新都在此处。其他同名 fork 均为二次开发分支。
+> **This is the official upstream of [`lxf746/any-auto-register`](https://github.com/lxf746/any-auto-register)** — the original author's repository with the most timely updates. Other repositories with the same name are forks.
 
-> 本项目仅供学习与研究,不得用于商业违规用途。使用者需自行评估并遵守目标平台的服务条款,所产生的一切后果由使用者自行承担。
+> For learning and research only. Not for commercial misuse. Users are responsible for evaluating and complying with the terms of service of the targeted platforms, and for any consequences that arise from use.
 
-## 它解决什么
+## What it solves
 
-多数同类项目只解决"怎么注册某一个平台",留下大量工程化空白:邮箱怎么管、验证码怎么过、代理怎么轮换、注册成功后怎么持续用、Token 过期了怎么办、出错了怎么定位。Any Auto Register 把这些都做了。
+Most similar projects only answer *"how do I register one platform"* and leave the engineering gaps wide open: how to manage mailboxes, get past captchas, rotate proxies, keep accounts alive after registration, refresh expired tokens, diagnose failures. Any Auto Register handles all of it.
 
-| | 同类工具 | Any Auto Register |
+| | Other tools | Any Auto Register |
 |---|---|---|
-| 部署 | 命令行 / Docker / .py 脚本 | 桌面客户端(Mac / Win)双击即用,内嵌 React UI |
-| 平台覆盖 | 1-3 个 | 11+ 平台 + Anything 通用适配器,新平台插件式接入 |
-| 邮箱方案 | 多数靠 IMAP | 9 种通道:MoeMail / Cloudflare 自建 / TempMail / DDG Email 等 |
-| 执行模式 | 仅浏览器 | 纯协议(最快)/ Headless / Headed 三种 |
-| 全生命周期 | 注册完丢一边 | 定时检测 + Token 续期 + Trial 预警 + 风险中心告警 |
-| 数据分析 | 无 | 注册成功率仪表盘,错误归因(代理被风控 / 邮箱异常 / 二次验证) |
-| API 网关联动 | 无 | 注册即推送 [Any2API](https://github.com/lxf746/any2api),统一接入 OpenAI 兼容协议层 |
-| 架构 | 通常硬编码 | 全插件化:平台 / 邮箱 / 验证码 / 接码 / 代理 都可热插拔 |
+| Deployment | CLI / Docker / `.py` scripts | Desktop client (Mac / Win), double-click to run, embedded React UI |
+| Platform coverage | 1-3 | 11+ platforms + Anything generic adapter, plugin-based extension |
+| Mailbox options | Mostly IMAP | 9 channels: MoeMail / Cloudflare self-hosted / TempMail / DDG Email, etc. |
+| Execution mode | Browser only | Pure protocol (fastest) / Headless / Headed |
+| Full lifecycle | Register and forget | Scheduled checks + token refresh + trial warning + risk center alerts |
+| Analytics | None | Success-rate dashboard with error attribution (proxy banned / mailbox failed / second-factor) |
+| API gateway sync | None | Auto-push to [Any2API](https://github.com/lxf746/any2api), unified OpenAI-compatible protocol layer |
+| Architecture | Usually hardcoded | Fully pluggable: platform / mailbox / captcha / SMS / proxy all hot-swappable |
 
-配合 [`Any2API`](https://github.com/lxf746/any2api) 网关可以一键打通:批量注册账号 → 自动推送 → 立即作为 OpenAI / Claude 兼容 API 使用。
+Pair with the [`Any2API`](https://github.com/lxf746/any2api) gateway for an end-to-end pipeline: **bulk-register → auto-push → instantly usable as OpenAI / Claude-compatible API**.
 
-## 一眼看完
+## At a glance
 
-> 截图来自最新桌面版 (`v1.0.29`),随版本迭代持续更新。顶部 Hero 图即为概览仪表盘——总账号 / 存活 / 失效 / 今日注册 / 后台队列 / 失败重试 6 项核心指标实时显示,叠加注册成功率与生命周期监控双视图,右侧汇总本机运行环境。下面是其他工作区视图:
+> Screenshots from the latest desktop build (`v1.0.29`), updated with each release. The hero image above is the Overview dashboard — six real-time indicators (total / alive / failed / today's registrations / queue / retries), with a stacked success-rate + lifecycle-monitoring view and a local-runtime summary panel. Below are the other workspaces:
 
-### 账号池 — 多平台账号统一管理
+### Account pool — unified multi-platform management
 
-按平台分 Tab 展示,密码 / 管家 / 状态 / 额度 / 支付链接 / 最近查询时间一览,支持搜索、批量导入导出、单条复制 / 打开支付。
+Per-platform tabs, with passwords / steward / status / quota / payment link / last query time visible at a glance. Search, bulk import / export, copy single rows, open payment links.
 
-![账号池](assets/screenshots/账号池.png)
+![Account pool](assets/screenshots/account_pool.png)
 
-### 任务队列 — 批量注册与历史
+### Task queue — batch registration and history
 
-集中查看全部 / 运行中任务,卡片显示平台、成功数 / 总数、时间戳与状态,可单任务查看实时日志、暂停全部、清空队列。
+All tasks vs. running tasks at a glance. Each card shows platform, success / total, timestamp, and status. Pause everything, clear the queue, or open the live log for one task.
 
-![任务队列](assets/screenshots/任务队列.png)
+![Task queue](assets/screenshots/task_queue.png)
 
-### 注册日志 — 实时步骤追踪
+### Registration log — real-time step tracing
 
-每一步注册过程通过 SSE 推送到前端,从 OAuth code 交换、Token 获取到额度查询全程可见,出错立即定位到具体步骤。
+Every step of the registration flow is streamed to the frontend via SSE — OAuth code exchange, token issuance, quota query, all visible. When something fails, you see exactly which step.
 
-![注册日志](assets/screenshots/注册.png)
+![Registration log](assets/screenshots/registration.png)
 
-### 全局设置 — 桌面端偏好
+### Settings — desktop-side preferences
 
-主题 / 语言 / 全局默认代理,以及桌面端专属的开机自启、最小化到托盘、关闭最小化、启动检查更新、自动备份等行为开关。
+Theme / language / global default proxy, plus desktop-only switches: launch at boot, minimize to tray, close-to-tray, check updates on launch, auto-backup directory.
 
-![全局设置](assets/screenshots/设置.png)
+![Settings](assets/screenshots/settings.png)
 
-## 核心能力
+## Core capabilities
 
-按职责分组:
+Grouped by responsibility:
 
-**注册流程**
+**Registration flow**
 
-- **平台**:ChatGPT / Cursor / Kiro / Trae.ai / Tavily / Grok / Blink / Cerebras / OpenBlockLabs / Windsurf,以及 Anything 通用适配器
-- **邮箱**:MoeMail 自建 / Cloudflare Worker 自建 / Laoudo / DuckMail / Testmail / Freemail / TempMail.lol / Temp-Mail Web / DuckDuckGo Email
-- **验证码**:YesCaptcha / 2Captcha / 本地 Solver (Camoufox)
-- **接码**:SMS-Activate / HeroSMS
-- **执行模式**:协议(无浏览器,最快)/ Headless / Headed,按平台支持情况切换
-- **本地 2FA**:内置 TOTP 计算,无需第三方应用获取动态码
+- **Platforms**: ChatGPT / Cursor / Kiro / Trae.ai / Tavily / Grok / Blink / Cerebras / OpenBlockLabs / Windsurf, plus the Anything generic adapter
+- **Mailboxes**: MoeMail self-hosted / Cloudflare Worker self-hosted / Laoudo / DuckMail / Testmail / Freemail / TempMail.lol / Temp-Mail Web / DuckDuckGo Email
+- **Captcha**: YesCaptcha / 2Captcha / local Solver (Camoufox)
+- **SMS**: SMS-Activate / HeroSMS
+- **Execution modes**: protocol (no browser, fastest) / Headless / Headed, switchable per platform
+- **Local 2FA**: built-in TOTP generator, no third-party app needed
 
-**运营管理**
+**Operations**
 
-- **生命周期**:定时有效性检测 + Token 自动续期 + Trial 过期预警,首页一键执行续期
-- **风险中心**:Token 已过期 / Trial 即将耗尽 / 代理连通异常 集中告警
-- **成功率统计**:全局成功率 + 错误归因(一次性成功 / 二次验证 / 代理被风控 / 邮箱域名异常),按平台 / 按天 / 按代理细分
-- **任务队列**:批量注册任务历史 + 实时进度 + 单任务日志
+- **Lifecycle**: scheduled validity check + token auto-refresh + trial warning, one-click refresh from the dashboard
+- **Risk center**: centralized alerts for *Token expired* / *Trial running out* / *Proxy unreachable*
+- **Success-rate stats**: global success rate + error attribution (first-try / second-factor / proxy banned / mailbox failure), broken down by platform / day / proxy
+- **Task queue**: batch registration history + live progress + per-task logs
 
-**系统能力**
+**System**
 
-- **代理池**:静态轮询(成功率加权)+ 动态 API 提取 + 旋转网关,失效自动禁用
-- **Any2API 联动**:注册成功后自动推送账号到网关,即注册即用
-- **导出格式**:JSON / CSV / CPA / Sub2API / Kiro-Go / Any2API admin.json
-- **并发与日志**:可配置并发数,SSE 实时日志,持久化任务执行器
-- **插件化**:平台 / 邮箱 / 验证码 / 接码 / 代理驱动 全部支持热插拔扩展
+- **Proxy pool**: static (success-rate weighted) + dynamic API extraction + rotating gateway, auto-disable on failure
+- **Any2API sync**: auto-push registered accounts to the gateway — ready to use immediately
+- **Export formats**: JSON / CSV / CPA / Sub2API / Kiro-Go / Any2API `admin.json`
+- **Concurrency & logging**: configurable concurrency, SSE live logs, persistent task runner
+- **Plugin architecture**: platform / mailbox / captcha / SMS / proxy drivers — all hot-swappable
 
-## 快速开始
+## Quick start
 
-### 桌面版(推荐)
+### Desktop (recommended)
 
-> 🚀 零配置,Electron 内置完整后端 + 前端,双击即用。
+> 🚀 Zero config. Electron bundles the full backend + frontend, double-click and go.
 
-| 平台 | 下载 |
+| Platform | Download |
 |------|------|
-| 🍎 macOS (Intel / Apple Silicon) | [Releases 下载 `.dmg`](https://github.com/lxf746/any-auto-register/releases/latest) |
-| 🪟 Windows | [Releases 下载 `.exe`](https://github.com/lxf746/any-auto-register/releases/latest) |
+| 🍎 macOS (Intel / Apple Silicon) | [Get `.dmg` from Releases](https://github.com/lxf746/any-auto-register/releases/latest) |
+| 🪟 Windows | [Get `.exe` from Releases](https://github.com/lxf746/any-auto-register/releases/latest) |
 
-下载安装 → 启动 → 输入激活码([加群获取](#社群))→ 选择平台 → 配置邮箱 → 开始注册。
+Install → launch → enter activation code ([get one from the group](#community)) → pick a platform → configure mailbox → start registering.
 
 ### Docker
 
@@ -133,7 +133,7 @@ services:
     image: ghcr.io/lxf746/any-auto-register:latest
     ports:
       - "8000:8000"   # Web UI
-      - "6080:6080"   # noVNC 可视化浏览器
+      - "6080:6080"   # noVNC (visualize the browser)
       - "8889:8889"   # Turnstile Solver
     environment:
       - DISPLAY=:99
@@ -146,19 +146,19 @@ EOF
 docker compose up -d
 ```
 
-| 服务 | 地址 | 说明 |
+| Service | URL | Notes |
 |------|------|------|
-| Web UI | `http://localhost:8000` | 主界面 |
-| noVNC | `http://localhost:6080/vnc.html` | 可视化浏览器(headed 模式) |
-| Solver | `http://localhost:8889` | Turnstile 验证码求解器 |
+| Web UI | `http://localhost:8000` | Main interface |
+| noVNC | `http://localhost:6080/vnc.html` | Watch the browser (headed mode) |
+| Solver | `http://localhost:8889` | Turnstile captcha solver |
 
-云服务器部署时请放行 `8000` / `6080` / `8889` 端口。
+When deploying to a cloud server, open ports `8000` / `6080` / `8889`.
 
-### 源码运行
+### From source
 
-> 源码包含核心注册流程与完整 provider 体系,适合二次开发和自部署。任务队列高级控制、激活码管理、支付流增强、最新平台适配的增强实现随桌面版发布。
+> The source tree contains the core registration flow and the full provider system — fine for self-hosting and extension. Advanced task-queue controls, license management, payment-flow enhancements, and the latest platform adaptations ship with the desktop build.
 
-需要 Python 3.11+ / Node.js 18+:
+Requires Python 3.11+ / Node.js 18+:
 
 ```bash
 git clone https://github.com/lxf746/any-auto-register.git
@@ -169,192 +169,188 @@ pip install -r requirements.txt
 
 cd frontend && npm install && npm run build && cd ..
 
-# 可选:浏览器模式需要
+# Optional — required for browser modes
 python3 -m playwright install chromium
 python3 -m camoufox fetch
 
 python3 -m uvicorn main:app --port 8000
 ```
 
-浏览器访问 `http://localhost:8000`。前端开发模式见 [开发文档](#开发文档)。
+Open `http://localhost:8000`. For frontend hot-reload see [Development](#development).
 
-## 配置详解
+## Configuration
 
-### 邮箱服务
+### Mailbox providers
 
-注册时需要选择一种邮箱服务用于接收验证码。当前版本邮箱、验证码、接码配置由后端 provider catalog 驱动,前端"全局配置"页是列表式 CRUD:左侧已添加配置,右侧统一编辑;后端新增 provider 后,前端无需写死选项,刷新即可出现。
+Pick a mailbox service to receive verification codes. Mailbox, captcha, and SMS configs are driven by a backend provider catalog — the **Settings** page in the Web UI is list-style CRUD: existing configs on the left, unified editor on the right. New providers added on the backend appear automatically after a refresh — no frontend code changes needed.
 
-| Provider | 说明 |
+| Provider | Notes |
 |----------|------|
-| **MoeMail**(推荐) | 基于 [cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email) 自建临时邮箱,无需配置,自动注册账号生成邮箱 |
-| **Laoudo** | 固定自有域名邮箱,稳定性最高,适合长期使用 |
-| **Cloudflare Worker 自建** | 基于 cloudflare_temp_email 自行部署,完全自主可控 |
-| **Testmail** | `testmail.app` namespace 模式,适合并发任务,自动 tag + 时间过滤 |
-| **DuckDuckGo Email** | `@duck.com` 私密别名 + IMAP 转发读取 |
-| **Freemail** | Cloudflare Worker 自建,支持管理员令牌或用户名密码认证 |
-| **DuckMail** | 公共临时邮箱,无需配置,部分地区需代理 |
-| **TempMail.lol** | 公共临时邮箱,自动生成匿名地址 |
-| **Temp-Mail Web** | 基于 `web2.temp-mail.org` 的临时邮箱 |
+| **MoeMail** (recommended) | Self-hosted temp mail based on [cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email). No config needed — addresses generated on the fly. |
+| **Laoudo** | Fixed custom-domain mailboxes. Highest stability, good for long-term use. |
+| **Cloudflare Worker self-hosted** | Deploy your own based on `cloudflare_temp_email`. Full control. |
+| **Testmail** | `testmail.app` namespace mode, ideal for concurrent tasks (auto tag + timestamp filtering). |
+| **DuckDuckGo Email** | `@duck.com` private aliases + IMAP forwarding. |
+| **Freemail** | Cloudflare Worker self-hosted, supports admin token or username / password auth. |
+| **DuckMail** | Public temp mail, no config. Proxy may be required in some regions. |
+| **TempMail.lol** | Public temp mail, anonymous addresses generated automatically. |
+| **Temp-Mail Web** | Based on `web2.temp-mail.org`. |
 
-各 Provider 字段格式参考全局配置页内字段提示,后端会按 provider catalog 自动渲染表单。
+Field formats are documented inline in the Settings editor — the backend renders each form from its provider catalog automatically.
 
-### 验证码服务
+### Captcha providers
 
-| 服务 | 说明 |
+| Service | Notes |
 |------|------|
-| YesCaptcha | 填写 Client Key,在 [yescaptcha.com](https://yescaptcha.com) 注册获取 |
-| 2Captcha | 填写 API Key,在 [2captcha.com](https://2captcha.com) 注册获取 |
-| 本地 Solver | Camoufox 本地解码,需先执行 `python3 -m camoufox fetch` |
+| YesCaptcha | Sign up at [yescaptcha.com](https://yescaptcha.com) for a Client Key |
+| 2Captcha | Sign up at [2captcha.com](https://2captcha.com) for an API Key |
+| Local Solver | Camoufox local solver, run `python3 -m camoufox fetch` first |
 
-### 代理池
+### Proxy pool
 
-| 🌟 推荐代理服务 | 简介说明 |
+| 🌟 Recommended Proxy | Description |
 | :--- | :--- |
-| <a href="https://www.swiftproxy.net/?ref=lxf746"><img src="assets/swiftproxy.svg" width="130" alt="Swiftproxy"/></a> | **[Swiftproxy](https://www.swiftproxy.net/?ref=lxf746)** — 80M+ 高质量住宅 IP，连接稳定高匿名，动态流量不过期，支持免费测试，完美适配自动化轮询。 |
+| <a href="https://www.swiftproxy.net/?ref=lxf746"><img src="assets/swiftproxy.svg" width="130" alt="Swiftproxy"/></a> | **[Swiftproxy](https://www.swiftproxy.net/?ref=lxf746)** — 80M+ high-quality residential IPs, stable and highly anonymous, dynamic traffic never expires, free trial available, perfect fit for automated rotation. |
 
-- **静态代理**:代理管理页手动添加,系统按成功率加权轮询,连续失败 5 次自动禁用
-- **API 提取代理**:通过 HTTP API 动态提取代理 IP,适用于大多数代理商
-- **旋转网关代理**:固定入口地址、每次请求自动分配出口 IP,适用于 BrightData / Oxylabs / IPRoyal 等
+- **Static proxies** — added manually on the Proxy page, weighted by success rate, auto-disabled after 5 consecutive failures
+- **API extraction** — pulls IPs dynamically via HTTP API, works for most vendor extraction endpoints
+- **Rotating gateway** — fixed entry, different exit IP per request — works for BrightData / Oxylabs / IPRoyal etc.
 
-数据库中启用 `proxy` provider 时,注册会优先尝试动态代理,失败或未配置自动回退到静态池。
+When a `proxy` provider is enabled in the database, registration tries dynamic proxies first and falls back to the static pool on failure.
 
-### 接码服务
+### SMS providers
 
-部分平台(如 Cursor)注册需要手机号验证:
+For platforms requiring phone verification (e.g. Cursor):
 
-| 服务 | 说明 |
+| Service | Notes |
 |------|------|
-| SMS-Activate | 填写 API Key,可配置默认国家 |
-| HeroSMS | 填写 API Key,可配置服务代码、国家 ID、最高单价、号码复用策略 |
+| SMS-Activate | API key + default country |
+| HeroSMS | API key + service code, country ID, max price, number-reuse policy |
 
-注册任务参数里指定 `sms_provider` 优先,未指定时使用默认接码 Provider。
+The task-level `sms_provider` parameter takes priority; otherwise the default SMS provider is used.
 
-## 进阶
+## Advanced
 
-### 账号生命周期
+### Account lifecycle
 
-系统内置后台生命周期管理器,自动执行:
+A background lifecycle manager runs automatically:
 
-- **有效性检测**:每 6 小时检测活跃账号,失效标记为 invalid
-- **Token 自动续期**:每 12 小时刷新即将过期的 token(当前支持 ChatGPT)
-- **Trial 过期预警**:扫描 trial 账号,即将过期标记预警,已过期自动更新状态
+- **Validity check** every 6 hours — invalid accounts marked
+- **Token auto-refresh** every 12 hours — refreshes expiring tokens (currently ChatGPT)
+- **Trial warning** — flags accounts nearing expiration, updates status when expired
 
-也可 API 手动触发:`POST /api/lifecycle/{check|refresh|warn}`,`GET /api/lifecycle/status` 查看状态。
+Manual triggers: `POST /api/lifecycle/{check|refresh|warn}`, `GET /api/lifecycle/status` for state.
 
-### 注册成功率与错误归因
+### Success-rate stats & error attribution
 
-- `GET /api/stats/overview` — 全局概览(总注册数、成功率、状态分布)
-- `GET /api/stats/by-platform` — 按平台统计
-- `GET /api/stats/by-day?days=30` — 按天趋势
-- `GET /api/stats/by-proxy` — 代理成功率排行
-- `GET /api/stats/errors?days=7` — 失败错误聚合
+- `GET /api/stats/overview` — global overview (totals, success rate, status distribution)
+- `GET /api/stats/by-platform` — per-platform
+- `GET /api/stats/by-day?days=30` — daily trend
+- `GET /api/stats/by-proxy` — proxy ranking
+- `GET /api/stats/errors?days=7` — aggregated error attribution
 
-### Any2API 联动
+### Any2API integration
 
-配合 [Any2API](https://github.com/lxf746/any2api) 网关,注册完成自动推送账号,注册即可用。
+Pair with the [Any2API](https://github.com/lxf746/any2api) gateway — registered accounts are auto-pushed and immediately usable.
 
-全局配置中设置:
+Configure in Settings:
 
-| 参数 | 说明 |
+| Field | Description |
 |------|------|
-| `any2api_url` | Any2API 实例地址,如 `http://localhost:8099` |
-| `any2api_password` | Any2API 管理密码 |
+| `any2api_url` | Any2API instance URL, e.g. `http://localhost:8099` |
+| `any2api_password` | Any2API admin password |
 
-注册成功后自动推送对应平台资源:
+Push targets per platform:
 
-| 平台 | 推送目标 |
+| Platform | Target |
 |------|----------|
-| Kiro | `kiroAccounts` 账号池 |
-| Grok | `grokTokens` token 池 |
+| Kiro | `kiroAccounts` pool |
+| Grok | `grokTokens` pool |
 | Cursor | `cursorConfig` cookie |
 | ChatGPT | `chatgptConfig` token |
-| Blink | `blinkConfig` 凭证 |
-| Windsurf | `windsurfAccounts` 账号池 |
+| Blink | `blinkConfig` credentials |
+| Windsurf | `windsurfAccounts` pool |
 
-未配置 `any2api_url` 时此功能静默跳过,不影响正常注册。
+If `any2api_url` is not set, this integration is silently skipped.
 
-## 技术栈
+## Tech stack
 
-| 层级 | 技术 |
+| Layer | Technology |
 |------|------|
-| 后端 | FastAPI + SQLite (SQLModel) |
-| 前端 | React + TypeScript + Vite + TailwindCSS |
-| HTTP | curl_cffi(浏览器指纹伪装) |
-| 浏览器自动化 | Playwright / Camoufox |
-| 桌面端 | Electron + Nuitka 打包 |
+| Backend | FastAPI + SQLite (SQLModel) |
+| Frontend | React + TypeScript + Vite + TailwindCSS |
+| HTTP | curl_cffi (browser fingerprint spoofing) |
+| Browser automation | Playwright / Camoufox |
+| Desktop | Electron + Nuitka packaging |
 
-## 开发文档
+## Development
 
 <details>
-<summary><b>项目结构</b></summary>
+<summary><b>Project structure</b></summary>
 
 ```
 account_manager/
-├── main.py                 # FastAPI 入口
-├── api/                    # HTTP 路由层
-│   ├── accounts.py         # 账号 CRUD + 导出
-│   ├── account_providers.py     # 邮箱 / 验证 / 接码 / 代理
-│   ├── registration.py          # 注册任务 + SSE
-│   ├── query.py                 # 账号状态查询
-│   ├── payment.py               # 支付链接 / 支付动作
-│   ├── transfer.py              # 导入导出
-│   ├── platforms.py             # 平台列表
-│   ├── provider_definitions.py  # Provider 定义管理
-│   ├── proxies.py               # 代理管理
-│   ├── health.py                # 健康检查
-│   └── system.py                # 系统设置 / Solver 管理
-├── application/            # 应用服务层
-├── domain/                 # 领域模型
-├── infrastructure/         # 仓储与运行时适配
-├── core/                   # 基础能力(平台 / 邮箱 / 验证码 / 接码 基类)
-├── platforms/              # 平台插件层
-├── providers/              # Provider 插件层
-│   ├── mailbox/
-│   ├── captcha/
-│   ├── sms/
-│   └── proxy/
-├── services/               # 后台服务(Solver 进程 / 任务执行器)
-├── customer_portal_api/    # C 端 / 管理端独立 API
-├── electron/               # Electron 桌面端打包
-├── tests/                  # 测试
-└── frontend/               # React 前端
+├── main.py                 # FastAPI entry
+├── api/                    # HTTP routes
+│   ├── accounts.py         # account CRUD + export
+│   ├── account_providers.py     # mailbox / captcha / SMS / proxy
+│   ├── registration.py          # registration tasks + SSE
+│   ├── query.py                 # account state queries
+│   ├── payment.py               # payment links / actions
+│   ├── transfer.py              # import / export
+│   ├── platforms.py             # platform listing
+│   ├── provider_definitions.py  # provider definitions
+│   ├── proxies.py               # proxy management
+│   ├── health.py                # health check
+│   └── system.py                # system settings / Solver
+├── application/            # application services
+├── domain/                 # domain models
+├── infrastructure/         # repositories + runtime adapters
+├── core/                   # base classes (platform / mailbox / captcha / SMS)
+├── platforms/              # platform plugins
+├── providers/              # provider plugins (mailbox / captcha / SMS / proxy)
+├── services/               # background services (Solver process / task runner)
+├── customer_portal_api/    # consumer + admin APIs
+├── electron/               # Electron desktop packaging
+├── tests/                  # tests
+└── frontend/               # React frontend
 ```
 
 </details>
 
 <details>
-<summary><b>开发模式(前端热更新)</b></summary>
+<summary><b>Development mode (frontend hot-reload)</b></summary>
 
 ```bash
 cd frontend
 npm run dev
-# 访问 http://localhost:5173,API 由 Vite 代理转发到后端
+# Open http://localhost:5173 — Vite proxies API requests to the backend
 ```
 
-启动入口统一 `main:app`,后端接口统一 `/api/*`,前后端接口契约见 [docs/frontend-api-contract.md](docs/frontend-api-contract.md)。
+The single entry point is `main:app`. All backend routes live under `/api/*`. See [`docs/frontend-api-contract.md`](docs/frontend-api-contract.md) for the API contract.
 
 </details>
 
 <details>
-<summary><b>新增平台插件</b></summary>
+<summary><b>Adding a platform plugin</b></summary>
 
-平台插件目录结构:
+Plugin layout:
 
 ```
 platforms/myplatform/
 ├── plugin.py
 ├── registration/
-│   ├── module.py       # 注册模块入口
-│   ├── protocol.py     # 协议核心
-│   ├── worker.py       # mailbox provider 到协议流程
-│   ├── browser.py      # 浏览器注册(按需)
-│   └── oauth.py        # 浏览器 OAuth(按需)
-├── query.py            # 查询能力(按需)
-├── payment.py          # 支付能力(按需)
-└── transfer.py         # 导入导出(按需)
+│   ├── module.py       # registration module entry
+│   ├── protocol.py     # protocol core
+│   ├── worker.py       # mailbox provider → protocol flow
+│   ├── browser.py      # browser registration (optional)
+│   └── oauth.py        # browser OAuth (optional)
+├── query.py            # query capability (optional)
+├── payment.py          # payment capability (optional)
+└── transfer.py         # import / export capability (optional)
 ```
 
-最小实现 `plugin.py`:
+Minimal `plugin.py`:
 
 ```python
 from core.platform_plugin import ConfiguredPlatformPlugin
@@ -370,64 +366,64 @@ class MyPlatformPlugin(ConfiguredPlatformPlugin):
     transfer_class = "MyPlatformTransfer"
 ```
 
-系统启动时扫描 `platforms/*/plugin.py` 自动加载 `@register` 注册的插件。完整的 `registration/module.py` 示例参考已有平台(`platforms/kiro/`、`platforms/chatgpt/`)。
+The system scans `platforms/*/plugin.py` at startup and auto-loads anything registered via `@register`. For a complete `registration/module.py` example, look at existing platforms (`platforms/kiro/`, `platforms/chatgpt/`).
 
 </details>
 
 <details>
-<summary><b>参与贡献</b></summary>
+<summary><b>Contributing</b></summary>
 
-1. Fork 本仓库
-2. 创建特性分支:`git checkout -b feature/my-feature`
-3. 提交:`git commit -m 'feat: add my feature'`(建议遵循 [Conventional Commits](https://www.conventionalcommits.org/))
-4. 推送:`git push origin feature/my-feature`
-5. 提交 Pull Request
-
-</details>
-
-## 常见问题
-
-<details>
-<summary><b>验证码失败怎么办?</b></summary>
-
-1. 确认验证码 provider 已正确配置(YesCaptcha Client Key 或本地 Solver)
-2. 协议模式下优先使用远程验证码服务(YesCaptcha / 2Captcha)
-3. 浏览器模式下 Camoufox 会自动尝试点击 Turnstile checkbox,失败时回退到远程 Solver
-4. 持续失败检查代理 IP 质量——高风险 IP 会触发更严格的验证
+1. Fork this repo
+2. Create a feature branch: `git checkout -b feature/my-feature`
+3. Commit: `git commit -m 'feat: add my feature'` ([Conventional Commits](https://www.conventionalcommits.org/) recommended)
+4. Push: `git push origin feature/my-feature`
+5. Open a Pull Request
 
 </details>
 
-<details>
-<summary><b>代理被封 / 注册失败率高?</b></summary>
+## FAQ
 
-1. 代理管理页查看各代理成功率,禁用低成功率代理
-2. 使用住宅代理而非数据中心代理,通过率显著更高
-3. 降低并发数,避免同一 IP 短时间内大量请求
-4. 不同平台对 IP 敏感度不同,可按平台分配代理池
+<details>
+<summary><b>Captcha keeps failing?</b></summary>
+
+1. Verify the captcha provider is configured correctly (YesCaptcha Client Key or local Solver)
+2. In protocol mode, prefer remote services (YesCaptcha / 2Captcha)
+3. In browser mode, Camoufox tries the Turnstile checkbox first and falls back to a remote solver
+4. If failures persist, check proxy IP quality — high-risk IPs trigger stricter challenges
 
 </details>
 
 <details>
-<summary><b>Solver 启动超时怎么办?</b></summary>
+<summary><b>Proxies getting banned / low success rate?</b></summary>
 
-`[Solver] 启动超时` 表示本地 Turnstile Solver 在 30 秒内没有通过健康检查,主服务仍然会继续启动。常见原因是首次启动需要下载或初始化 Camoufox、当前环境缺少浏览器依赖,或 8889 端口被占用。
-
-1. 本地执行 `python3 -m camoufox fetch`,然后在"全局配置"页点击"重启 Solver"
-2. 如不依赖本地 Solver,配置 YesCaptcha 或 2Captcha,注册任务中选择远程验证码
-3. Docker 环境建议使用预构建镜像;本地裸跑持续超时优先检查 8889 端口和 Camoufox 安装
+1. Check per-proxy stats on the Proxy page and disable low-performers
+2. Use residential proxies, not datacenter IPs
+3. Lower concurrency to avoid bursting from the same IP
+4. Different platforms have different IP sensitivity — consider per-platform proxy pools
 
 </details>
 
 <details>
-<summary><b>ARM 镜像构建失败?</b></summary>
+<summary><b>Solver startup timeout?</b></summary>
 
-如果日志里出现 `src/pages/Accounts.tsx ... TS6133/TS7006`,实际失败点是前端 TypeScript 构建,不是 ARM 或 apt 安装问题。先本地执行:
+`[Solver] startup timeout` means the local Turnstile Solver didn't pass health-check within 30s. The main service still starts. Usual causes: first-run Camoufox download, missing browser deps, or port `8889` taken.
+
+1. Run `python3 -m camoufox fetch` locally, then click "Restart Solver" in Settings
+2. To skip the local Solver, configure YesCaptcha or 2Captcha and pick a remote solver in the task config
+3. For Docker, prefer the prebuilt image; for bare metal, check port `8889` and Camoufox install
+
+</details>
+
+<details>
+<summary><b>ARM image build failing?</b></summary>
+
+If the build log shows `src/pages/Accounts.tsx ... TS6133/TS7006`, the actual failure is in the frontend TypeScript build — not ARM or apt issues. Run locally first:
 
 ```bash
 cd frontend && npm run build
 ```
 
-确认前端构建通过后再执行:
+Then rebuild:
 
 ```bash
 docker compose build --no-cache && docker compose up -d
@@ -435,25 +431,25 @@ docker compose build --no-cache && docker compose up -d
 
 </details>
 
-## 社群
+## Community
 
-加入用户群获取最新动态、激活码、配置经验和注册技巧:
+Join the user group for latest updates, activation codes, configuration tips, and registration tricks:
 
-| QQ 群 | 群号 | 状态 |
+| QQ Group | ID | Status |
 |---|---|---|
-| 一群 | `1081650009` | 已满 |
-| 二群 | `1097916468` | 已满 |
-| 三群 | `100799970` | 可加入 |
+| #1 | `1081650009` | Full |
+| #2 | `1097916468` | Full |
+| #3 | `100799970` | Open |
 
-直接在 QQ 中搜索群号加入。提交 Bug 或新功能请求请前往 [Issues](https://github.com/lxf746/any-auto-register/issues)。
+Search the group ID inside QQ. For bugs and feature requests, please use [Issues](https://github.com/lxf746/any-auto-register/issues).
 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=lxf746/any-auto-register&type=Date)](https://star-history.com/#lxf746/any-auto-register&Date)
 
-> 如果这个项目帮你省下了重复劳动的时间,点个 ⭐ 让更多人看到。
+> If this project saved you some repetitive work, a ⭐ helps others find it.
 
-## 赞助商
+## Sponsors
 
 <table>
 <tr>
@@ -463,13 +459,13 @@ docker compose build --no-cache && docker compose up -d
 </a>
 </td>
 <td>
-<b><a href="https://www.rapidproxy.io/?ref=lxf">RapidProxy</a></b> — 高质量住宅代理,智能 IP 轮换,低封禁率,流量不过期,助力数据采集。<br/>
-90M+ 真实住宅 IP · 200+ 国家 / 地区 · 99.9% 在线率 · &lt;0.5s 响应。<br/>
-<a href="https://www.rapidproxy.io/?ref=lxf"><b>免费试用 →</b></a>
+<b><a href="https://www.rapidproxy.io/?ref=lxf">RapidProxy</a></b> — High-quality residential proxies with smart IP rotation, low ban rate, and non-expiring traffic. Powerful for data collection.<br/>
+90M+ real residential IPs · 200+ countries / regions · 99.9% uptime · &lt;0.5s response.<br/>
+<a href="https://www.rapidproxy.io/?ref=lxf"><b>Free trial →</b></a>
 </td>
 </tr>
 </table>
 
 ## License
 
-本项目采用 [AGPL-3.0](LICENSE) 许可证。个人学习和研究可自由使用;商业使用需遵守 AGPL-3.0 条款(衍生作品须开源)。
+[AGPL-3.0](LICENSE). Personal learning and research are unrestricted; commercial use must comply with AGPL-3.0 (derivative works must be open-sourced).

@@ -10,23 +10,23 @@ dist/
 build/
 _debug_*.py
 
-# 数据库
+# Database
 *.db
 *.db-journal
 *.sqlit
 *.db.*.bak
 *.db.pre_*
 
-# 日志
+# Logs
 logs/
 *.log
 
-# 账号数据
+# Account data
 accounts.txt
 *_accounts.txt
 account.txt
 
-# 前端
+# Frontend
 frontend/node_modules/
 frontend/dist/
 
@@ -43,14 +43,14 @@ backend.spec
 --collect-all=*
 static/
 
-# Docker 数据
+# Docker data
 data/
 
-# 环境变量
+# Environment variables
 .env
 .env.local
 
-# 文档
+# Documentation
 docs/
 
 # macOS
@@ -62,12 +62,12 @@ docs/
 *.swp
 .ace-tool/
 
-# AI 工具 & 设计文档
+# AI tools & design docs
 AGENTS.md
 .claude/
 .trellis/
 .windsurf/
 docs/REFACTOR-PLAN.md
 
-# 敏感文件
+# Sensitive files
 *.har
