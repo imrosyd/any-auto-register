@@ -18,7 +18,7 @@ class HeroSmsQueryRequest(BaseModel):
 
 def _saved_herosms_config() -> dict:
     repo = ProviderSettingsRepository()
-    # 兼容旧版 provider_key "herosms" 和新版 "herosms_api"
+    # Support both the old provider_key "herosms" and the new "herosms_api"
     config = repo.resolve_runtime_settings("sms", "herosms_api", {})
     if not config.get("herosms_api_key"):
         config = repo.resolve_runtime_settings("sms", "herosms", {})
@@ -66,7 +66,7 @@ def herosms_balance(body: HeroSmsQueryRequest | None = None):
     body = body or HeroSmsQueryRequest()
     provider = _provider_from_payload(body)
     if not provider.api_key:
-        raise HTTPException(400, "HeroSMS API Key 未配置")
+        raise HTTPException(400, "HeroSMS API Key not configured")
     try:
         return {"balance": provider.get_balance()}
     except Exception as exc:
@@ -78,7 +78,7 @@ def herosms_prices(body: HeroSmsQueryRequest | None = None):
     body = body or HeroSmsQueryRequest()
     provider = _provider_from_payload(body)
     if not provider.api_key:
-        raise HTTPException(400, "HeroSMS API Key 未配置")
+        raise HTTPException(400, "HeroSMS API Key not configured")
     try:
         service = str(body.service or provider.default_service or HERO_SMS_DEFAULT_SERVICE)
         country = str(body.country or provider.default_country or HERO_SMS_DEFAULT_COUNTRY)
@@ -98,17 +98,17 @@ class HeroSmsBestCountryRequest(BaseModel):
 
 @router.post("/herosms/top-countries")
 def herosms_top_countries(body: HeroSmsBestCountryRequest | None = None):
-    """获取按价格排序的国家列表（含价格和库存）。"""
+    """Return countries sorted by price (with price and stock)."""
     body = body or HeroSmsBestCountryRequest()
     provider = _provider_from_payload(HeroSmsQueryRequest(
         api_key=body.api_key, service=body.service, proxy=body.proxy,
     ))
     if not provider.api_key:
-        raise HTTPException(400, "HeroSMS API Key 未配置")
+        raise HTTPException(400, "HeroSMS API Key not configured")
     try:
         service = str(body.service or provider.default_service or HERO_SMS_DEFAULT_SERVICE)
         rows = provider.get_top_countries(service=service)
-        # 只返回有库存的
+        # Only return countries that have stock
         rows = [r for r in rows if (r.get("count") or 0) > 0]
         if body.top_n > 0:
             rows = rows[:body.top_n]
@@ -119,13 +119,13 @@ def herosms_top_countries(body: HeroSmsBestCountryRequest | None = None):
 
 @router.post("/herosms/best-country")
 def herosms_best_country(body: HeroSmsBestCountryRequest | None = None):
-    """自动选择最优国家（价格最低 + 库存充足）。"""
+    """Auto-select the best country (lowest price with sufficient stock)."""
     body = body or HeroSmsBestCountryRequest()
     provider = _provider_from_payload(HeroSmsQueryRequest(
         api_key=body.api_key, service=body.service, proxy=body.proxy,
     ))
     if not provider.api_key:
-        raise HTTPException(400, "HeroSMS API Key 未配置")
+        raise HTTPException(400, "HeroSMS API Key not configured")
     try:
         service = str(body.service or provider.default_service or HERO_SMS_DEFAULT_SERVICE)
         best = provider.get_best_country(
@@ -134,7 +134,7 @@ def herosms_best_country(body: HeroSmsBestCountryRequest | None = None):
             max_price=body.max_price,
         )
         if best:
-            # 获取详细信息
+            # Fetch full detail for the best country
             rows = provider.get_top_countries(service=service)
             detail = next((r for r in rows if str(r.get("country")) == str(best)), None)
             return {
@@ -193,7 +193,7 @@ def smsbower_balance(body: HeroSmsQueryRequest | None = None):
     body = body or HeroSmsQueryRequest()
     provider = _smsbower_from_payload(body)
     if not provider.api_key:
-        raise HTTPException(400, "SMSBower API Key 未配置")
+        raise HTTPException(400, "SMSBower API Key not configured")
     try:
         return {"balance": provider.get_balance()}
     except Exception as exc:
@@ -205,7 +205,7 @@ def smsbower_prices(body: HeroSmsQueryRequest | None = None):
     body = body or HeroSmsQueryRequest()
     provider = _smsbower_from_payload(body)
     if not provider.api_key:
-        raise HTTPException(400, "SMSBower API Key 未配置")
+        raise HTTPException(400, "SMSBower API Key not configured")
     try:
         service = str(body.service or provider.default_service or HERO_SMS_DEFAULT_SERVICE)
         country = str(body.country or provider.default_country or HERO_SMS_DEFAULT_COUNTRY)
